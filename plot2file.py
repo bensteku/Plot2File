@@ -39,29 +39,28 @@ gray_blur_img = cv2.GaussianBlur(gray_img, (kernel_size, kernel_size), 0)
 low_t = 50
 high_t = 150
 edge_img = cv2.Canny(gray_blur_img, low_t, high_t)
-line_img = img.copy() * 0
-show_img = line_img.copy()
-tmp_img = line_img.copy()
+show_img = img.copy() * 0
+tmp_img = img.copy() * 0
 
 # helper method for the interactive mode
 def draw_axes(event, x, y, flags, param):
-    global bbox, mode, tmp_img, line_img
-    tmp_img = line_img.copy()
+    global bbox, mode, tmp_img, img
+    tmp_img = img.copy()
     if event == cv2.EVENT_LBUTTONDBLCLK:
         if mode == 0:  # placing x axis
-            cv2.line(line_img, (0, y), (img.shape[1], y), (255, 0, 0), 3)
+            cv2.line(img, (0, y), (img.shape[1], y), (255, 0, 0), 3)
             bbox[3] = y
             mode = 1
         elif mode == 1:  # placing y axis
-            cv2.line(line_img, (x, 0), (x, img.shape[0]), (0, 255, 0), 3)
+            cv2.line(img, (x, 0), (x, img.shape[0]), (0, 255, 0), 3)
             bbox[0] = x
             mode = 2
         elif mode == 2:  # placing upper x axis
-            cv2.line(line_img, (0, y), (img.shape[1], y), (255, 0, 0), 3)
+            cv2.line(img, (0, y), (img.shape[1], y), (255, 0, 0), 3)
             bbox[2] = y
             mode = 3
         elif mode == 3:  # placing right y axis
-            cv2.line(line_img, (x, 0), (x, img.shape[0]), (0, 255, 0), 3)
+            cv2.line(img, (x, 0), (x, img.shape[0]), (0, 255, 0), 3)
             bbox[1] = x
             mode = 4
     # live drawing
@@ -130,8 +129,8 @@ if args.interactive:
     cv2.setMouseCallback('plot', draw_axes)
 
     while(mode != 4):
-        cv2.addWeighted(img, 0.5, tmp_img, 0.5, 0, show_img)
-        cv2.imshow('plot', show_img)
+        #cv2.addWeighted(img, 0.5, tmp_img, 0.5, 0, show_img)
+        cv2.imshow('plot', tmp_img)
         k = cv2.waitKey(20) & 0xFF
     print("Bounding box of plot from user input (px):")
 else:
